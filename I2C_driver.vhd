@@ -54,7 +54,7 @@ architecture Behavioral of I2C_driver is
          );
     end component;
 
-    type stato_t is (idle, start, send_address, read_ack, readed_nack, writing, reading, write_ack, stop);
+    type stato_t is (idle, start, send_address, read_ack, readed_nack, writing, reading, write_ack, write_nack, stop);
     signal i2c_state : stato_t := idle;
     signal sda_int, scl_int : std_logic := '1';
     signal data, addr : std_logic_vector(7 downto 0) := (others => '0');
@@ -232,6 +232,12 @@ begin
                         -- elsif to_start = '0' and to_stop = '1' then
                         --     i2c_stop <= stop;
                         -- end if ;
+                    end if ;
+                when write_nack => 
+                    if scl_count > half_cycle and scl_count < total_cycle then
+                        sda_int <= '1';
+                    elsif scl_count = total_cycle then
+                        i2c_state <= stop;
                     end if ;
                 when stop => 
                     to_stop <= '0';
