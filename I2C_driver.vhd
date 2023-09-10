@@ -56,7 +56,7 @@ architecture Behavioral of I2C_driver is
 
     type stato_t is (idle, start, send_address, read_ack, readed_nack, writing, reading, write_ack, stop);
     signal i2c_state : stato_t := idle;
-    signal sda_int, scl_int : std_logic;
+    signal sda_int, scl_int : std_logic := '1';
     signal data, addr : std_logic_vector(7 downto 0) := (others => '0');
     signal ack, nack : std_logic;
     
