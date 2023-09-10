@@ -152,6 +152,7 @@ begin
                         end if ;
                     end if ;
                 when read_ack => 
+                    sda_int <= '1';
                     if scl_count = half_cycle + quarter_cycle then
                         if sda = '0' then
                             ack <= '1';
@@ -160,6 +161,7 @@ begin
                         end if ;
                     elsif scl_count = total_cycle then
                         scl_count <= (others => '0');
+                        --data_count <= (others => '1');
                         if ack = '1' then
                             if to_stop = '1' then
                                 i2c_state <= stop;
@@ -215,6 +217,7 @@ begin
                         sda_int <= data(to_integer(data_count));
                     elsif scl_count = total_cycle and data_count = 0 then
                         to_stop <= '1';
+                        --sda_int <= '1';
                         i2c_state <= read_ack;
                     end if ;
                 when write_ack => 
