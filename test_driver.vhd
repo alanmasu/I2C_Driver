@@ -143,6 +143,18 @@ begin
         
         i2c_ena <= '0';
         wait until i2c_busy = '0';
+        wait for 20 us;
+
+        i2c_ena <= '1';
+        i2c_data_length <= "011";       -- Read 3 byte
+        wait for 21.257 us;             -- Address ACK
+        i2c_sda <= '0';
+        wait for 1.89 us;
+        i2c_sda <= 'Z';
+
+        i2c_ena <= '0';
+        wait until i2c_busy = '0';
+
 
         wait;
     end process ; -- test_pro
