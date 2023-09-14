@@ -36,16 +36,16 @@ entity test_driver is
 end test_driver;
 
 architecture Behavioral of test_driver is
-    signal clk, res : STD_LOGIC;                        --clock and reset signals
-    signal i2c_ena     : STD_LOGIC;                     --i2c enable signal
-    signal i2c_addr    : STD_LOGIC_VECTOR(6 DOWNTO 0);  --i2c address signal
-    signal i2c_rw      : STD_LOGIC;                     --i2c read/write command signal
-    signal i2c_data_wr : STD_LOGIC_VECTOR;              --i2c write data
-    signal i2c_data_rd : STD_LOGIC_VECTOR;              --i2c read data
-    signal i2c_busy    : STD_LOGIC;                     --i2c busy signal
-    signal i2c_error   : STD_LOGIC;                     --i2c Error signal
-    signal i2c_sda, i2c_scl    : STD_LOGIC;             --i2c sda and scl signal
-    signal i2c_data_length     : STD_LOGIC_VECTOR;      --i2c data length signal
+    signal clk, res : STD_LOGIC;                            --clock and reset signals
+    signal i2c_ena     : STD_LOGIC;                         --i2c enable signal
+    signal i2c_addr    : STD_LOGIC_VECTOR(6 DOWNTO 0);      --i2c address signal
+    signal i2c_rw      : STD_LOGIC;                         --i2c read/write command signal
+    signal i2c_data_wr : STD_LOGIC_VECTOR(31 downto 0);     --i2c write data
+    signal i2c_data_rd : STD_LOGIC_VECTOR(31 downto 0);     --i2c read data
+    signal i2c_busy    : STD_LOGIC;                         --i2c busy signal
+    signal i2c_error   : STD_LOGIC;                         --i2c Error signal
+    signal i2c_sda, i2c_scl    : STD_LOGIC;                 --i2c sda and scl signal
+    signal i2c_data_length : STD_LOGIC_VECTOR(2 downto 0);  --i2c data length signal
 begin
     driver : entity work.I2C_driver
     port map(
