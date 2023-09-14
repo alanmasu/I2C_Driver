@@ -54,12 +54,6 @@ entity I2C_driver is
 end I2C_driver;
 
 architecture Behavioral of I2C_driver is
-    component clk_wiz
-        port(  
-            clk_out1 : out std_logic;
-            clk_in1  : in  std_logic
-         );
-    end component;
 
     type stato_t is (idle, start, send_address, read_ack, readed_nack, writing, reading, write_ack, write_nack, stop);
     signal i2c_state : stato_t := idle;
@@ -76,7 +70,6 @@ architecture Behavioral of I2C_driver is
     constant total_cycle : unsigned (7 downto 0) := to_unsigned(249, 8);    --250 cicli * 10 ns - 1 ciclo * 10 ns
     constant half_cycle : unsigned (7 downto 0) := to_unsigned(124, 8);     --125 cicli * 10 ns - 1 ciclo * 10 ns
     constant quarter_cycle : unsigned (7 downto 0) := to_unsigned(61, 8);   --62  cicli * 10 ns - 1 ciclo * 10 ns
-    
 
 begin
 
@@ -174,18 +167,18 @@ begin
                         end if ;
                     elsif scl_count = total_cycle then
                         scl_count <= (others => '0');
-                        if ack = '1' and byte_count /= data_length_int - 1 then     -- ACK
+                        if nack = '1' and byte_count = 0 then                       -- ERROR: address not found
+                            error <= '1';
+                            i2c_state <= stop;
+                        elsif nack = '1' or byte_count = data_length_int then       -- END of Transmission
+                            i2c_state <= stop;
+                            data_length_out <= std_logic_vector(byte_count + 1);
+                        elsif ack = '1' and byte_count /= data_length_int then      -- ACK
                             if rw_n_int = '1' then
                                 i2c_state <= reading;
                             elsif rw_n_int = '0' then
                                 i2c_state <= writing;
                             end if ;
-                        elsif nack = '1' or byte_count = data_length_int - 1 then   -- END of Transmission
-                            i2c_state <= stop;
-                            data_length_out <= std_logic_vector(byte_count + 1);
-                        elsif nack = '1' and byte_count = 0 then                -- ERROR: address not found
-                            error <= '1';
-                            i2c_state <= stop;
                         end if ;
                     end if ;
                 -- when readed_nack => 
@@ -219,10 +212,11 @@ begin
                         end if ;
                     end if ;
                 when write_ack => 
-                    if scl_count > half_cycle and scl_count < total_cycle then
+                    if scl_count > quarter_cycle and scl_count < total_cycle then
                         sda_int <= '0';
                     elsif scl_count = total_cycle then
                         i2c_state <= reading;
+                        sda_int <= '1';
                     end if ;
                 when write_nack => 
                     if scl_count > half_cycle and scl_count < total_cycle then

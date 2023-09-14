@@ -79,16 +79,70 @@ begin
     end process ; -- res_gen
 
     test_pro : process begin
+        i2c_sda <= 'Z';
+        i2c_scl <= 'Z';
         wait until res = '1';
         i2c_addr <= "1010000";
         i2c_rw <= '0';                  --write
-        i2c_data_wr <= x"00000052";     --write 0x52 to register 0x00
+        i2c_data_wr <= x"000052f0";     --write 0x52 to register 0x00
         i2c_data_length <= "001";       --write 1 byte
         i2c_ena <= '1';
+        wait for 21.265 us;             -- Address ACK
+        i2c_sda <= '0';
+        wait for 1.89 us;               
+        i2c_sda <= 'Z';
+        wait for 20.601 us;             -- Dato NACK
+        i2c_sda <= '1';
+        wait for 1.89 us;
+        i2c_sda <= 'Z';
+    
+        wait for 23.75 us;              -- Address NACK
+        i2c_sda <= '1';
+        wait for 1.89 us;
+        i2c_sda <= 'Z';
+
+        i2c_data_length <= "010";       -- Write 2 bytes
+        wait for 24.6 us;               -- Address ACK
+        i2c_sda <= '0';
+        wait for 1.89 us;               
+        i2c_sda <= 'Z';
+        wait for 20.601 us;             -- Dato 1 ACK
+        i2c_sda <= '0';
+        wait for 1.89 us;
+        i2c_sda <= 'Z';
+        wait for 20.601 us;             -- Dato 2 NACK
+        i2c_sda <= '1';
+        wait for 1.89 us;
+        i2c_sda <= 'Z';
+
+        --PAUSE
+        i2c_ena <= '0'; 
+        wait for 20 us;
+        i2c_ena <= '1';
+        i2c_rw <= '1';                  --read
+        i2c_data_length <= "001";       --read 1 byte
+        wait for 21.24 us;              -- Address ACK
+        i2c_sda <= '0';
+        wait for 1.89 us;
+        i2c_sda <= 'Z';
+        wait for 20.601 us;             -- Dato 1 ACK
+        
+        wait for 1.89 us;
+
+
+
+        i2c_ena <= '0'; 
+        wait for 20 us;
+        i2c_ena <= '1';
+        i2c_data_length <= "010";       -- Read 2 bytes
+
+        wait for 21.257 us;             -- Address ACK
+        i2c_sda <= '0';
+        wait for 1.89 us;
+        i2c_sda <= 'Z';
+        
+        i2c_ena <= '0';
         wait until i2c_busy = '0';
-
-
-
 
         wait;
     end process ; -- test_pro
