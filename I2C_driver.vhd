@@ -118,6 +118,7 @@ begin
                     scl_count <= scl_count;
                     if en = '1' and unsigned(data_length) > 0 then
                         error <= '0';
+                        busy <= '1';
                         sda_int <= '0';
                         data <= d_in;
                         rw_n_int <= rw_n;
@@ -216,6 +217,7 @@ begin
                     if scl_count > quarter_cycle and scl_count < total_cycle then
                         sda_int <= '0';
                     elsif scl_count = total_cycle then
+                        sda_int <= '1';
                         i2c_state <= reading;
 sda_int <= '1';
                     end if ;
