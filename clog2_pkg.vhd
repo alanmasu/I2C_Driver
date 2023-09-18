@@ -24,7 +24,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
@@ -33,6 +33,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 package log2_pkg is
     function clog2(x : positive) return natural;
+    function freq2cycle_count(f : positive) return integer;
+    function freq2cycle_count_u(f : integer) return unsigned;
+    function freq2dim(f : integer) return integer;
 end package log2_pkg;
 
 package body log2_pkg is
@@ -50,4 +53,29 @@ package body log2_pkg is
         -- L and T  <->  2**(r-1) < x <= 2**r  <->  (r-1) < log2(x) <= r
         return r; --
     end clog2;
+
+    --Frequency to cycle counter
+    function freq2cycle_count(f : integer) return integer is
+        variable counter : integer := 0;
+    begin 
+        counter := 100000/f;
+        return counter;
+    end function;
+
+    --Frequency to cycle counter
+    function freq2cycle_count_u(f : integer) return unsigned is
+        variable counter : integer := 0;
+    begin 
+        counter := 100000/f;
+        return to_unsigned(counter, freq2dim(f));
+    end function;
+
+    --Frequency to dim std_logic_vector dimension
+    function freq2dim(f : integer) return integer is
+        variable dim : integer := 0;
+    begin
+        dim := clog2(freq2cycle_count(f));
+        return dim;
+    end function;
+
 end package body log2_pkg;
