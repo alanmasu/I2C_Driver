@@ -37,7 +37,7 @@ use work.log2_pkg.all;
 entity I2C_driver is
     generic(
         BYTE_BUFF_SIZE : integer := 4;
-        FREQUENCY_KHZ : integer := 400
+        FREQ_KHZ : integer := 400
     );
     Port ( clk : in STD_LOGIC;                                                          -- Clock
            res : in STD_LOGIC;                                                          -- Reset asincrono
@@ -63,14 +63,14 @@ architecture Behavioral of I2C_driver is
     signal rw_n_int: std_logic := '0';
     signal ack, nack : std_logic;
     signal data : std_logic_vector((BYTE_BUFF_SIZE * 8) - 1 downto 0);                      -- Registro
-    signal scl_count : unsigned (7 downto 0) := (others => '0');
+    signal scl_count : unsigned (freq2dim(FREQ_KHZ) - 1  downto 0) := (others => '0');
     signal to_start, to_stop : std_logic := '0';
     signal data_count : unsigned (2 downto 0) := (others => '0');                           -- Contatore di bit
     signal byte_count : unsigned (clog2(BYTE_BUFF_SIZE) downto 0) := (others => '0');       -- Contatore di byte
     signal data_length_int : unsigned (clog2(BYTE_BUFF_SIZE) downto 0) := (others => '0');  -- Contatore di scritti in uscita
-    constant total_cycle : unsigned (7 downto 0) := to_unsigned(freq2cycle_count(FREQUENCY_KHZ), 8);--250 cicli * 10 ns - 1 ciclo * 10 ns
-    constant half_cycle : unsigned (7 downto 0) := total_cycle/2;                           --125 cicli * 10 ns - 1 ciclo * 10 ns
-    constant quarter_cycle : unsigned (7 downto 0) := total_cycle/4;                        --62  cicli * 10 ns - 1 ciclo * 10 ns
+    constant total_cycle : unsigned (freq2dim(FREQ_KHZ) - 1 downto 0) := freq2count_u(FREQ_KHZ); --250 cicli * 10 ns - 1 ciclo * 10 ns
+    constant half_cycle : unsigned (freq2dim(FREQ_KHZ) - 1  downto 0) := total_cycle/2;     --125 cicli * 10 ns - 1 ciclo * 10 ns
+    constant quarter_cycle : unsigned (freq2dim(FREQ_KHZ) - 1  downto 0) := total_cycle/4;  --62  cicli * 10 ns - 1 ciclo * 10 ns
     
 
 begin

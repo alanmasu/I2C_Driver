@@ -33,8 +33,8 @@ use IEEE.NUMERIC_STD.ALL;
 
 package log2_pkg is
     function clog2(x : positive) return natural;
-    function freq2cycle_count(f : positive) return integer;
-    function freq2cycle_count_u(f : integer) return unsigned;
+    function freq2count(f : positive) return integer;
+    function freq2count_u(f : integer) return unsigned;
     function freq2dim(f : integer) return integer;
 end package log2_pkg;
 
@@ -55,7 +55,7 @@ package body log2_pkg is
     end clog2;
 
     --Frequency to cycle counter
-    function freq2cycle_count(f : integer) return integer is
+    function freq2count(f : integer) return integer is
         variable counter : integer := 0;
     begin 
         counter := 100000/f;
@@ -63,7 +63,7 @@ package body log2_pkg is
     end function;
 
     --Frequency to cycle counter
-    function freq2cycle_count_u(f : integer) return unsigned is
+    function freq2count_u(f : integer) return unsigned is
         variable counter : integer := 0;
     begin 
         counter := 100000/f;
@@ -74,7 +74,7 @@ package body log2_pkg is
     function freq2dim(f : integer) return integer is
         variable dim : integer := 0;
     begin
-        dim := clog2(freq2cycle_count(f));
+        dim := clog2(freq2count(f));
         return dim;
     end function;
 
