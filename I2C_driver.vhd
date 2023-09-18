@@ -65,11 +65,12 @@ architecture Behavioral of I2C_driver is
     signal scl_count : unsigned (7 downto 0) := (others => '0');
     signal to_start, to_stop : std_logic := '0';
     signal data_count : unsigned (2 downto 0) := (others => '0');                           -- Contatore di bit
-    signal byte_count : unsigned (clog2(BYTE_BUFF_SIZE - 1) downto 0) := (others => '0');   -- Contatore di byte
-    signal data_length_int : unsigned (clog2(BYTE_BUFF_SIZE) downto 0) := (others => '0');  -- Contatore di byte
+    signal byte_count : unsigned (clog2(BYTE_BUFF_SIZE) downto 0) := (others => '0');       -- Contatore di byte
+    signal data_length_int : unsigned (clog2(BYTE_BUFF_SIZE) downto 0) := (others => '0');  -- Contatore di scritti in uscita
     constant total_cycle : unsigned (7 downto 0) := to_unsigned(249, 8);    --250 cicli * 10 ns - 1 ciclo * 10 ns
     constant half_cycle : unsigned (7 downto 0) := to_unsigned(124, 8);     --125 cicli * 10 ns - 1 ciclo * 10 ns
     constant quarter_cycle : unsigned (7 downto 0) := to_unsigned(61, 8);   --62  cicli * 10 ns - 1 ciclo * 10 ns
+    
 
 begin
 
@@ -115,7 +116,7 @@ begin
                     nack <= '0';
                     ack <= '0';
                     scl_count <= scl_count;
-                    if en = '1' and unsigned(data_length) > 0 then 
+                    if en = '1' and unsigned(data_length) > 0 then
                         error <= '0';
                         sda_int <= '0';
                         data <= d_in;
@@ -216,7 +217,7 @@ begin
                         sda_int <= '0';
                     elsif scl_count = total_cycle then
                         i2c_state <= reading;
-                        sda_int <= '1';
+sda_int <= '1';
                     end if ;
                 when write_nack => 
                     if scl_count > half_cycle and scl_count < total_cycle then
