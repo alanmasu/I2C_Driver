@@ -169,7 +169,7 @@ begin
                             nack <= '1';
                         end if ;
                     elsif scl_count = total_cycle then
-                        scl_count <= (others => '0');
+                        --scl_count <= (others => '0');
                         if nack = '1' and byte_count = 0 then                       -- ERROR: address not found
                             error <= '1';
                             i2c_state <= stop;
@@ -220,7 +220,6 @@ begin
                     elsif scl_count = total_cycle then
                         sda_int <= '1';
                         i2c_state <= reading;
-sda_int <= '1';
                     end if ;
                 when write_nack => 
                     if scl_count > half_cycle and scl_count < total_cycle then
