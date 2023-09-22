@@ -48,6 +48,9 @@ architecture Behavioral of test_driver is
     signal i2c_data_length : STD_LOGIC_VECTOR(2 downto 0);  --i2c data length signal
 begin
     driver : entity work.I2C_driver
+    generic map(
+        FREQ_KHZ => 100
+    )
     port map(
         clk => clk, 
         res => res, 
