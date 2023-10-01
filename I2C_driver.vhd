@@ -92,10 +92,10 @@ begin
             to_stop  <= '0';
         elsif rising_edge(clk) then
             if i2c_state = wait_slave then
-                if scl = '1' then
+                if To_X01(scl) = '1' then
                     i2c_state <= i2c_state_p;
                 end if ;
-            elsif scl_int /= scl then
+            elsif scl_int /= To_X01(scl) then
                 i2c_state_p <= i2c_state;
                 i2c_state <= wait_slave;
             else
@@ -171,9 +171,9 @@ begin
                     when read_ack => 
                         sda_int <= '1';
                         if scl_count = half_cycle + quarter_cycle then
-                            if sda = '0' then
+                            if to_X01(sda) = '0' then
                                 ack <= '1';
-                            elsif sda = '1' then
+                            elsif to_X01(sda) = '1' then
                                 nack <= '1';
                             end if ;
                         elsif scl_count = total_cycle then
